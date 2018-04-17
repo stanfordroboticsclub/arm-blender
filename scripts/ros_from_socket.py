@@ -20,6 +20,8 @@ class JointStatePublisher():
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
         self.sock.bind((UDP_IP, UDP_PORT))
 
+        self.sock.setblocking(0)
+
         rospy.init_node('blender_joint_state_publisher', anonymous=True)
         
         # rate = rospy.get_param('~rate', 20)
@@ -29,13 +31,11 @@ class JointStatePublisher():
         self.joint_states_pub = rospy.Publisher('/hello', String)
         rospy.loginfo("Starting Blender Joint State Publisher at " + str(20) + "Hz")
        
-        # while not rospy.is_shutdown():
-        while 1:
-            rospy.loginfo('here')
-            self.publish_joint_states()
 
-            # self.publish_joint_states()
-            # r.sleep()
+        self.data = "0"
+        while not rospy.is_shutdown():
+            self.publish_joint_states()
+            r.sleep()
        
     def publish_joint_states(self):
         # msg = JointState()
@@ -45,7 +45,6 @@ class JointStatePublisher():
         # msg.velocity = []
         # msg.effort = []
           
-        rospy.loginfo('alive')
         msg = String()
         msg.data = self.get_elbow()
 
@@ -56,14 +55,13 @@ class JointStatePublisher():
 
     def get_elbow(self):
 
+        try:
+            while 1:
+                self.data = self.sock.recv(1024) # buffer size is 1024 bytes
+        except socket.error:
+            pass
 
-        # angle = float(sys.stdin.readline())
-        
-        rospy.loginfo( 'getting' )
-
-        data, addr = self.sock.recvfrom(1024) # buffer size is 1024 bytes
-
-        angle = data
+        angle = self.data
         rospy.loginfo( angle )
 
         return angle
