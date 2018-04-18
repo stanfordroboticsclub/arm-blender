@@ -14,8 +14,23 @@ class BlenderPusher:
         self.UDP_PORT = 5005
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
 
+        self.joints = [self.get_turret, 
+                       self.get_shoulder, 
+                       self.get_elbow, 
+                       self.get_wrist_pitch, 
+                       self.get_wrist_yaw, 
+                       self.get_wrist_roll, 
+                       self.get_grip]
+
     def push(self):
-        self.sock.sendto(str(self.get_elbow()).encode() , (self.UDP_IP, self.UDP_PORT))
+        out = ';'.join((str(x()) for x in self.joints))
+        self.sock.sendto(out.encode() , (self.UDP_IP, self.UDP_PORT))
+
+    def get_turret(self):
+        return 1
+
+    def get_shoulder(self):
+        return 2
 
     def get_elbow(self):
         D = bpy.data
@@ -28,6 +43,18 @@ class BlenderPusher:
         
         su = math.sqrt(su)
         return su
+
+    def get_wrist_pitch(self):
+        return 3
+
+    def get_wrist_yaw(self):
+        return 4
+
+    def get_wrist_roll(self):
+        return 5
+
+    def get_grip(self):
+        return 6
 
 if __name__ == '__main__':
 
