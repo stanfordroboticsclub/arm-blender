@@ -1,0 +1,5 @@
+
+<launch>
+    <node pkg="arm-blender" name="blender_to_ros" type="ros_from_socket.py" />
+    <node pkg="arm-blender" name="blender_control" type="start_blender.sh"  />
+</launch>
