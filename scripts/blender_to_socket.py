@@ -30,7 +30,17 @@ class BlenderPusher:
         return 1
 
     def get_shoulder(self):
-        return 2
+        D = bpy.data
+        vec1 = D.objects['Shoulder1'].matrix_world.to_translation()
+        vec2 = D.objects['Shoulder2'].matrix_world.to_translation()
+        
+        su =  (vec1[0] - vec2[0])**2
+        su += (vec1[1] - vec2[1])**2
+        su += (vec1[2] - vec2[2])**2
+        
+        su = math.sqrt(su)
+        return su
+
 
     def get_elbow(self):
         D = bpy.data
