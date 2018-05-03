@@ -26,6 +26,19 @@ class BlenderPusher:
         out = ';'.join((str(x()) for x in self.joints))
         self.sock.sendto(out.encode() , (self.UDP_IP, self.UDP_PORT))
 
+    def get_distance(self, obj1, obj2):
+        D = bpy.data
+        vec1 = D.objects[obj1].matrix_world.to_translation()
+        vec2 = D.objects[obj2].matrix_world.to_translation()
+        return (vec1 - vec2).length
+
+    def get_angle(self, obj1, center, obj2):
+        D = bpy.data
+        vecC = D.objects[center].matrix_world.to_translation()
+        vec1 = D.objects[obj1].matrix_world.to_translation()
+        vec2 = D.objects[obj2].matrix_world.to_translation()
+        return (vec1 - vecC).angle(vec2 - vecC)
+
     def get_turret(self):
         return 1
 
