@@ -49,10 +49,10 @@ class BlenderPusher:
         return self.get_distance('Elbow1', 'Elbow2')
 
     def get_wrist_pitch(self):
-        return self.get_distance('Elbow2','WristCube', 'WristDown')
+        return self.get_angle('Elbow2','WristCube', 'WristDown')
 
     def get_wrist_yaw(self):
-        return self.get_distance('WristSide','WristCube', 'WristPointer')
+        return self.get_angle('WristSide','WristCube', 'WristPointer')
 
     def get_wrist_roll(self):
         return 5
