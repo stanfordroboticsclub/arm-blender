@@ -43,35 +43,16 @@ class BlenderPusher:
         return 1
 
     def get_shoulder(self):
-        D = bpy.data
-        vec1 = D.objects['Shoulder1'].matrix_world.to_translation()
-        vec2 = D.objects['Shoulder2'].matrix_world.to_translation()
-        
-        su =  (vec1[0] - vec2[0])**2
-        su += (vec1[1] - vec2[1])**2
-        su += (vec1[2] - vec2[2])**2
-        
-        su = math.sqrt(su)
-        return su
-
+        return self.get_distance('Shoulder1', 'Shoulder2')
 
     def get_elbow(self):
-        D = bpy.data
-        vec1 = D.objects['Elbow1'].matrix_world.to_translation()
-        vec2 = D.objects['Elbow2'].matrix_world.to_translation()
-        
-        su =  (vec1[0] - vec2[0])**2
-        su += (vec1[1] - vec2[1])**2
-        su += (vec1[2] - vec2[2])**2
-        
-        su = math.sqrt(su)
-        return su
+        return self.get_distance('Elbow1', 'Elbow2')
 
     def get_wrist_pitch(self):
-        return 3
+        return self.get_distance('Elbow2','WristCube', 'WristDown')
 
     def get_wrist_yaw(self):
-        return 4
+        return self.get_distance('WristSide','WristCube', 'WristPointer')
 
     def get_wrist_roll(self):
         return 5
