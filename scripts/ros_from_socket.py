@@ -19,11 +19,11 @@ class JointStatePublisher():
 
         rospy.init_node('blender_joint_state_publisher', anonymous=True)
         
-        # rate = rospy.get_param('~rate', 20)
-        r = rospy.Rate(20)
+        rate = 5
+        r = rospy.Rate(rate)
 
         self.joint_states_pub = rospy.Publisher('/joint_states', JointState, queue_size=10)
-        rospy.loginfo("Starting Blender Joint State Publisher at " + str(20) + "Hz")
+        rospy.loginfo("Starting Blender Joint State Publisher at " + str(rate) + "Hz")
 
         self.data = "0;0;0;0;0;0;0"
         while not rospy.is_shutdown():
