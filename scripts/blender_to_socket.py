@@ -5,6 +5,7 @@ import math
 import time
 
 import socket
+from struct import Struct
 
 
 class BlenderPusher:
@@ -13,6 +14,8 @@ class BlenderPusher:
         self.UDP_IP = "127.0.0.1"
         self.UDP_PORT = 5005
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+
+        self.struct = Struct("fffffff")
 
         self.joints = [self.get_turret, 
                        self.get_shoulder, 
@@ -23,8 +26,11 @@ class BlenderPusher:
                        self.get_grip]
 
     def push(self):
-        out = ';'.join((str(x()) for x in self.joints))
-        self.sock.sendto(out.encode() , (self.UDP_IP, self.UDP_PORT))
+        # out = ';'.join((str(x()) for x in self.joints))
+        # self.sock.sendto(out.encode() , (self.UDP_IP, self.UDP_PORT))
+        out = self.struct.pack( *(x() for x in self.joints) )
+        self.sock.sendto(out , (self.UDP_IP, self.UDP_PORT))
+
 
     def get_distance(self, obj1, obj2):
         D = bpy.data

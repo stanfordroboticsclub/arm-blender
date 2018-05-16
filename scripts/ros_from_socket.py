@@ -5,6 +5,7 @@ import rospy
 import math
 import time
 import socket
+from struct import Struct
 
 from sensor_msgs.msg import JointState
 
@@ -16,6 +17,7 @@ class JointStatePublisher():
         self.sock.bind((UDP_IP, UDP_PORT))
 
         self.sock.setblocking(0)
+        self.struct = Struct("fffffff")
 
         rospy.init_node('blender_joint_state_publisher', anonymous=True)
         
@@ -25,7 +27,8 @@ class JointStatePublisher():
         self.joint_states_pub = rospy.Publisher('/joint_states', JointState, queue_size=10)
         rospy.loginfo("Starting Blender Joint State Publisher at " + str(20) + "Hz")
 
-        self.data = "0;0;0;0;0;0;0"
+        self.data = self.struct.pack(0,0,0,0,0,0,0)
+
         while not rospy.is_shutdown():
             self.publish_joint_states()
             r.sleep()
@@ -56,7 +59,7 @@ class JointStatePublisher():
         except socket.error:
             pass
 
-        return [float(x) for x in self.data.split(';')]
+        return self.struct.unpack(self.data)
 
         
 if __name__ == '__main__':
