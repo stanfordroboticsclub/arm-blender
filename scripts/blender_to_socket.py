@@ -62,7 +62,8 @@ class BlenderPusher:
         return 5
 
     def get_grip(self):
-        return 6
+        D = bpy.data
+        return D.objects['Armature'].pose.bones['Centered_Target'].scale[0]
 
     def get_offsets(self):
         D = bpy.data
