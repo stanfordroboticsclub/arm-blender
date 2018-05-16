@@ -15,9 +15,9 @@ class SocketPrinter():
         self.sock.bind((UDP_IP, UDP_PORT))
 
         self.sock.setblocking(0)
-        self.struct = Struct("fffffff")
+        self.struct = Struct("f"*7 + "i"*7)
 
-        self.data = self.struct.pack(0,0,0,0,0,0,0)
+        self.data = self.struct.pack(*([0]*14))
 
         while 1:
             print self.get_state()

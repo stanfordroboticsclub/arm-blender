@@ -15,7 +15,7 @@ class BlenderPusher:
         self.UDP_PORT = 5005
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
 
-        self.struct = Struct("fffffff")
+        self.struct = Struct("f"*7 + "i"*7)
 
         self.joints = [self.get_turret, 
                        self.get_shoulder, 
@@ -26,9 +26,7 @@ class BlenderPusher:
                        self.get_grip]
 
     def push(self):
-        # out = ';'.join((str(x()) for x in self.joints))
-        # self.sock.sendto(out.encode() , (self.UDP_IP, self.UDP_PORT))
-        out = self.struct.pack( *(x() for x in self.joints) )
+        out = self.struct.pack( * ( tuple(x() for x in self.joints) + self.get_offsets()) )
         self.sock.sendto(out , (self.UDP_IP, self.UDP_PORT))
 
 
@@ -67,19 +65,17 @@ class BlenderPusher:
         return 6
 
     def get_offsets(self):
-        pass
-        # D = bpy.data
-        # D.scenes['Scene'].arm_offsets.wrist_roll_offset
+        D = bpy.data
+        return (D.scenes['Scene'].arm_offsets.gripper_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_roll_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_R_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_L_offset,
+                    D.scenes['Scene'].arm_offsets.elbow_offset,
+                    D.scenes['Scene'].arm_offsets.shoulder_offset,
+                    D.scenes['Scene'].arm_offsets.turret_offset)
 
-        # col.prop(scene.arm_offsets, "gripper_offset")
-        # col.prop(scene.arm_offsets, "wrist_roll_offset")
-        
-        # col.prop(scene.arm_offsets, "wrist_R_offset")
-        # col.prop(scene.arm_offsets, "wrist_L_offset")
 
-        # col.prop(scene.arm_offsets, "elbow_offset")
-        # col.prop(scene.arm_offsets, "shoulder_offset")
-        # col.prop(scene.arm_offsets, "turret_offset")
+
 
 if __name__ == '__main__':
 

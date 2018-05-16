@@ -17,7 +17,7 @@ class JointStatePublisher():
         self.sock.bind((UDP_IP, UDP_PORT))
 
         self.sock.setblocking(0)
-        self.struct = Struct("fffffff")
+        self.struct = Struct("fffffffiiiiiii")
 
         rospy.init_node('blender_joint_state_publisher', anonymous=True)
         
@@ -27,7 +27,7 @@ class JointStatePublisher():
         self.joint_states_pub = rospy.Publisher('/joint_states', JointState, queue_size=10)
         rospy.loginfo("Starting Blender Joint State Publisher at " + str(20) + "Hz")
 
-        self.data = self.struct.pack(0,0,0,0,0,0,0)
+        self.data = self.struct.pack(*([0]*14))
 
         while not rospy.is_shutdown():
             self.publish_joint_states()
@@ -43,9 +43,10 @@ class JointStatePublisher():
                       "wrist_roll",
                       "grip"]
 
-        msg.position = self.get_state()
+        incoming_data = self.get_state()
+        msg.position = incoming_data[:7]
         msg.velocity = []
-        msg.effort = []
+        msg.effort = incoming_data[7:]
           
         msg.header.stamp = rospy.Time.now()
         msg.header.frame_id = 'base_link'
