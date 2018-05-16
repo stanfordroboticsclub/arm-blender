@@ -1,21 +1,73 @@
 import bpy
 
 class ArmOffsets(bpy.types.PropertyGroup):
-    wrist_roll_offset = bpy.props.FloatProperty(
-        name = "Float Value",
-        description = "A float property",
-        default = 23.7,
-        min = 0.01,
-        max = 30.0
-        )
+    # wrist_roll_offset = bpy.props.FloatProperty(
+    #     name = "Float Value",
+    #     description = "A float property",
+    #     default = 23.7,
+    #     min = 0.01,
+    #     max = 30.0
+    #     )
            
-    my_int = bpy.props.IntProperty(
-        name = "Int Value",
+    turret_offset = bpy.props.IntProperty(
+        name = "Turret Offset",
         description="A integer property",
-        default = 23,
-        min = 10,
-        max = 100
+        default = 0,
+        min = -10000,
+        max = 10000
         )
+
+    shoulder_offset = bpy.props.IntProperty(
+        name = "Shoulder Offset",
+        description="A integer property",
+        default = 0,
+        min = -1000,
+        max = 1000
+        )
+
+    elbow_offset = bpy.props.IntProperty(
+        name = "Shoulder Offset",
+        description="A integer property",
+        default = 0,
+        min = -1000,
+        max = 1000
+        )
+
+
+    wrist_L_offset = bpy.props.IntProperty(
+        name = "Wrist Roll Offset",
+        description="A integer property",
+        default = 0,
+        min = -10000,
+        max = 10000
+        )
+
+    wrist_R_offset = bpy.props.IntProperty(
+        name = "Wrist Roll Offset",
+        description="A integer property",
+        default = 0,
+        min = -10000,
+        max = 10000
+        )
+
+
+    wrist_roll_offset = bpy.props.IntProperty(
+        name = "Wrist Roll Offset",
+        description="A integer property",
+        default = 0,
+        min = -10000,
+        max = 10000
+        )
+
+    
+    gripper_offset = bpy.props.IntProperty(
+        name = "Gripper Offset",
+        description="A integer property",
+        default = 0,
+        min = -50,
+        max = 50
+        )
+
         
 class ArmOffsetsPanel(bpy.types.Panel):
     """Creates a Panel in the scene context of the properties editor"""
@@ -30,22 +82,23 @@ class ArmOffsetsPanel(bpy.types.Panel):
 
         scene = context.scene
 
-        # Create a simple row.
         layout.label(text=" Simple Row:")
 
-        row = layout.column()
-        row.prop(scene.arm_offsets, "wrist_roll_offset")
-        row.prop(scene.arm_offsets, "wrist_roll_offset")
+        col = layout.column()
+        col.prop(scene.arm_offsets, "gripper_offset")
+        col.prop(scene.arm_offsets, "wrist_roll_offset")
         
-        row.prop(scene.arm_offsets, "my_int")
+        col.prop(scene.arm_offsets, "wrist_R_offset")
+        col.prop(scene.arm_offsets, "wrist_L_offset")
 
+        col.prop(scene.arm_offsets, "elbow_offset")
+        col.prop(scene.arm_offsets, "shoulder_offset")
+        col.prop(scene.arm_offsets, "turret_offset")
 
 def register():
     bpy.utils.register_module(__name__)
     bpy.types.Scene.arm_offsets = bpy.props.PointerProperty(type=ArmOffsets)
    ## bpy.utils.register_class(ArmOffsetsPanel)
-   
-    
 
 
 def unregister():
