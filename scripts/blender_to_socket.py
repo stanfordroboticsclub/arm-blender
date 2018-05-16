@@ -60,6 +60,21 @@ class BlenderPusher:
     def get_grip(self):
         return 6
 
+    def get_offsets(self):
+        pass
+        # D = bpy.data
+        # D.scenes['Scene'].arm_offsets.wrist_roll_offset
+
+        # col.prop(scene.arm_offsets, "gripper_offset")
+        # col.prop(scene.arm_offsets, "wrist_roll_offset")
+        
+        # col.prop(scene.arm_offsets, "wrist_R_offset")
+        # col.prop(scene.arm_offsets, "wrist_L_offset")
+
+        # col.prop(scene.arm_offsets, "elbow_offset")
+        # col.prop(scene.arm_offsets, "shoulder_offset")
+        # col.prop(scene.arm_offsets, "turret_offset")
+
 if __name__ == '__main__':
 
     a = BlenderPusher()
