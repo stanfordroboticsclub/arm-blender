@@ -67,6 +67,14 @@ class BlenderPusher:
 
     def get_offsets(self):
         D = bpy.data
+        return (D.scenes['Scene'].arm_offsets.turret_offset,
+                    D.scenes['Scene'].arm_offsets.shoulder_offset,
+                    D.scenes['Scene'].arm_offsets.elbow_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_L_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_R_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_roll_offset,
+                    D.scenes['Scene'].arm_offsets.gripper_offset)
+
         return (D.scenes['Scene'].arm_offsets.gripper_offset,
                     D.scenes['Scene'].arm_offsets.wrist_roll_offset,
                     D.scenes['Scene'].arm_offsets.wrist_R_offset,

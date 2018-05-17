@@ -26,7 +26,7 @@ class ArmOffsets(bpy.types.PropertyGroup):
         )
 
     elbow_offset = bpy.props.IntProperty(
-        name = "Shoulder Offset",
+        name = "Elbow Offset",
         description="A integer property",
         default = 0,
         min = -1000,
@@ -35,7 +35,7 @@ class ArmOffsets(bpy.types.PropertyGroup):
 
 
     wrist_L_offset = bpy.props.IntProperty(
-        name = "Wrist Roll Offset",
+        name = "Wrist L Offset",
         description="A integer property",
         default = 0,
         min = -10000,
@@ -43,7 +43,7 @@ class ArmOffsets(bpy.types.PropertyGroup):
         )
 
     wrist_R_offset = bpy.props.IntProperty(
-        name = "Wrist Roll Offset",
+        name = "Wrist R Offset",
         description="A integer property",
         default = 0,
         min = -10000,
@@ -85,15 +85,15 @@ class ArmOffsetsPanel(bpy.types.Panel):
         layout.label(text=" Simple Row:")
 
         col = layout.column()
-        col.prop(scene.arm_offsets, "gripper_offset")
-        col.prop(scene.arm_offsets, "wrist_roll_offset")
+        col.prop(scene.arm_offsets, "gripper_offset", slider=True)
+        col.prop(scene.arm_offsets, "wrist_roll_offset", slider=True)
         
-        col.prop(scene.arm_offsets, "wrist_R_offset")
-        col.prop(scene.arm_offsets, "wrist_L_offset")
+        col.prop(scene.arm_offsets, "wrist_R_offset", slider=True)
+        col.prop(scene.arm_offsets, "wrist_L_offset", slider=True)
 
-        col.prop(scene.arm_offsets, "elbow_offset")
-        col.prop(scene.arm_offsets, "shoulder_offset")
-        col.prop(scene.arm_offsets, "turret_offset")
+        col.prop(scene.arm_offsets, "elbow_offset", slider=True)
+        col.prop(scene.arm_offsets, "shoulder_offset", slider=True)
+        col.prop(scene.arm_offsets, "turret_offset", slider=True)
 
 def register():
     bpy.utils.register_module(__name__)
