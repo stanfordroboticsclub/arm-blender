@@ -44,7 +44,8 @@ class BlenderPusher:
         return (vec1 - vecC).angle(vec2 - vecC)
 
     def get_turret(self):
-        return 1
+        D = bpy.data
+        return D.objects['Armature'].pose.bones['Turret'].matrix.to_euler()[2]
 
     def get_shoulder(self):
         return self.get_distance('Shoulder1', 'Shoulder2')
@@ -59,7 +60,7 @@ class BlenderPusher:
         return self.get_angle('WristSide','WristCube', 'WristPointer')
 
     def get_wrist_roll(self):
-        return 5
+        return self.get_angle('WristUp','WristPointer', 'GripperUp')
 
     def get_grip(self):
         D = bpy.data
