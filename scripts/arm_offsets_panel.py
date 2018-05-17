@@ -38,17 +38,19 @@ class ArmOffsets(bpy.types.PropertyGroup):
         name = "Wrist L Offset",
         description="A integer property",
         default = 0,
-        min = -10000,
-        max = 10000
-        )
+        min = -20000,
+        max = 20000,
+        soft_max= 5000,
+        soft_min= -5000)
 
     wrist_R_offset = bpy.props.IntProperty(
         name = "Wrist R Offset",
         description="A integer property",
         default = 0,
-        min = -10000,
-        max = 10000
-        )
+        min = -20000,
+        max = 20000,
+        soft_max= 5000,
+        soft_min= -5000)
 
 
     wrist_roll_offset = bpy.props.IntProperty(
