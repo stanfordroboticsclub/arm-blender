@@ -5,6 +5,7 @@ import rospy
 import math
 import time
 import socket
+from struct import Struct
 
 from sensor_msgs.msg import JointState
 
@@ -16,16 +17,18 @@ class JointStatePublisher():
         self.sock.bind((UDP_IP, UDP_PORT))
 
         self.sock.setblocking(0)
+        self.struct = Struct("fffffffiiiiiii")
 
         rospy.init_node('blender_joint_state_publisher', anonymous=True)
         
-        # rate = rospy.get_param('~rate', 20)
-        r = rospy.Rate(20)
+        rate = 5
+        r = rospy.Rate(rate)
 
         self.joint_states_pub = rospy.Publisher('/joint_states', JointState, queue_size=10)
-        rospy.loginfo("Starting Blender Joint State Publisher at " + str(20) + "Hz")
+        rospy.loginfo("Starting Blender Joint State Publisher at " + str(rate) + "Hz")
 
-        self.data = "0;0;0;0;0;0;0"
+        self.data = self.struct.pack(*([0]*14))
+
         while not rospy.is_shutdown():
             self.publish_joint_states()
             r.sleep()
@@ -40,9 +43,10 @@ class JointStatePublisher():
                       "wrist_roll",
                       "grip"]
 
-        msg.position = self.get_state()
+        incoming_data = self.get_state()
+        msg.position = incoming_data[:7]
         msg.velocity = []
-        msg.effort = []
+        msg.effort = incoming_data[7:]
           
         msg.header.stamp = rospy.Time.now()
         msg.header.frame_id = 'base_link'
@@ -56,7 +60,7 @@ class JointStatePublisher():
         except socket.error:
             pass
 
-        return [float(x) for x in self.data.split(';')]
+        return self.struct.unpack(self.data)
 
         
 if __name__ == '__main__':

@@ -5,6 +5,7 @@ import math
 import time
 
 import socket
+from struct import Struct
 
 
 class BlenderPusher:
@@ -13,6 +14,8 @@ class BlenderPusher:
         self.UDP_IP = "127.0.0.1"
         self.UDP_PORT = 5005
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+
+        self.struct = Struct("f"*7 + "i"*7)
 
         self.joints = [self.get_turret, 
                        self.get_shoulder, 
@@ -23,38 +26,66 @@ class BlenderPusher:
                        self.get_grip]
 
     def push(self):
-        out = ';'.join((str(x()) for x in self.joints))
-        self.sock.sendto(out.encode() , (self.UDP_IP, self.UDP_PORT))
+        out = self.struct.pack( * ( tuple(x() for x in self.joints) + self.get_offsets()) )
+        self.sock.sendto(out , (self.UDP_IP, self.UDP_PORT))
+
+
+    def get_distance(self, obj1, obj2):
+        D = bpy.data
+        vec1 = D.objects[obj1].matrix_world.to_translation()
+        vec2 = D.objects[obj2].matrix_world.to_translation()
+        return (vec1 - vec2).length
+
+    def get_angle(self, obj1, center, obj2):
+        D = bpy.data
+        vecC = D.objects[center].matrix_world.to_translation()
+        vec1 = D.objects[obj1].matrix_world.to_translation()
+        vec2 = D.objects[obj2].matrix_world.to_translation()
+        return (vec1 - vecC).angle(vec2 - vecC)
 
     def get_turret(self):
-        return 1
+        D = bpy.data
+        return D.objects['Armature'].pose.bones['Turret'].matrix.to_euler()[2]
 
     def get_shoulder(self):
-        return 2
+        return self.get_distance('Shoulder1', 'Shoulder2')
 
     def get_elbow(self):
-        D = bpy.data
-        vec1 = D.objects['Elbow1'].matrix_world.to_translation()
-        vec2 = D.objects['Elbow2'].matrix_world.to_translation()
-        
-        su =  (vec1[0] - vec2[0])**2
-        su += (vec1[1] - vec2[1])**2
-        su += (vec1[2] - vec2[2])**2
-        
-        su = math.sqrt(su)
-        return su
+        return self.get_distance('Elbow1', 'Elbow2')
 
     def get_wrist_pitch(self):
-        return 3
+        return self.get_angle('Elbow2','WristCube', 'WristDown')
 
     def get_wrist_yaw(self):
-        return 4
+        return self.get_angle('WristSide','WristCube', 'WristPointer')
 
     def get_wrist_roll(self):
-        return 5
+        return self.get_angle('WristUp','WristPointer', 'GripperUp')
 
     def get_grip(self):
-        return 6
+        D = bpy.data
+        return D.objects['Armature'].pose.bones['Centered_Target'].scale[0]
+
+    def get_offsets(self):
+        D = bpy.data
+        return (D.scenes['Scene'].arm_offsets.turret_offset,
+                    D.scenes['Scene'].arm_offsets.shoulder_offset,
+                    D.scenes['Scene'].arm_offsets.elbow_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_L_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_R_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_roll_offset,
+                    D.scenes['Scene'].arm_offsets.gripper_offset)
+
+        return (D.scenes['Scene'].arm_offsets.gripper_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_roll_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_R_offset,
+                    D.scenes['Scene'].arm_offsets.wrist_L_offset,
+                    D.scenes['Scene'].arm_offsets.elbow_offset,
+                    D.scenes['Scene'].arm_offsets.shoulder_offset,
+                    D.scenes['Scene'].arm_offsets.turret_offset)
+
+
+
 
 if __name__ == '__main__':
 
