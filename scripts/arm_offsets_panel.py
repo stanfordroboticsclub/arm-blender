@@ -57,8 +57,10 @@ class ArmOffsets(bpy.types.PropertyGroup):
         name = "Wrist Roll Offset",
         description="A integer property",
         default = 0,
-        min = -10000,
-        max = 10000
+        soft_max= 20000,
+        soft_min= -20000,
+        min = -5000,
+        max = 5000
         )
 
     
