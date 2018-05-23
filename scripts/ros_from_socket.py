@@ -5,22 +5,26 @@ import rospy
 import math
 import time
 import socket
+import numpy as np
+from sensor_msgs.msg import Joy
 from struct import Struct
 
 from sensor_msgs.msg import JointState
 
 class JointStatePublisher():
     def __init__(self):
-        UDP_IP = "127.0.0.1"
-        UDP_PORT = 5005
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+        #127.0.0.1
+        UDP_IP = 'localhost'
+        UDP_PORT = 13130
+
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind((UDP_IP, UDP_PORT))
 
         self.sock.setblocking(0)
         self.struct = Struct("fffffffiiiiiii")
 
         rospy.init_node('blender_joint_state_publisher', anonymous=True)
-        
+
         rate = 5
         r = rospy.Rate(rate)
 
@@ -32,7 +36,7 @@ class JointStatePublisher():
         while not rospy.is_shutdown():
             self.publish_joint_states()
             r.sleep()
-       
+
     def publish_joint_states(self):
         msg = JointState()
         msg.name = ["turret",
@@ -47,7 +51,7 @@ class JointStatePublisher():
         msg.position = incoming_data[:7]
         msg.velocity = []
         msg.effort = incoming_data[7:]
-          
+
         msg.header.stamp = rospy.Time.now()
         msg.header.frame_id = 'base_link'
 
@@ -62,9 +66,22 @@ class JointStatePublisher():
 
         return self.struct.unpack(self.data)
 
-        
+def manual_control(data):
+    rospy.loginfo(data)
+    values = np.empty(4, dtype=np.float32)
+    for i in xrange(4):
+        values[i] = data.axes[i] #int(data.axes[i] * 63 + 64)
+
+    wsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    JOY_IP = 'localhost'
+    JOY_PORT = 7007
+
+    struct = Struct('dddd')
+    wsock.sendto(struct.pack(values[0], values[1], values[2], values[3]), (JOY_IP, JOY_PORT))
+
 if __name__ == '__main__':
     try:
+        rospy.Subscriber('joy', Joy, manual_control)
         s = JointStatePublisher()
         rospy.spin()
     except rospy.ROSInterruptException: pass

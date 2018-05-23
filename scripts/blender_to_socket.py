@@ -3,6 +3,7 @@
 import bpy
 import math
 import time
+import threading
 
 import socket
 from struct import Struct
@@ -11,24 +12,24 @@ from struct import Struct
 class BlenderPusher:
 
     def __init__(self):
-        self.UDP_IP = "127.0.0.1"
-        self.UDP_PORT = 5005
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM) 
+        #self.UDP_IP = "127.0.0.1"
+        self.UDP_IP = 'localhost'
+        self.UDP_PORT = 13130
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
         self.struct = Struct("f"*7 + "i"*7)
 
-        self.joints = [self.get_turret, 
-                       self.get_shoulder, 
-                       self.get_elbow, 
-                       self.get_wrist_pitch, 
-                       self.get_wrist_yaw, 
-                       self.get_wrist_roll, 
+        self.joints = [self.get_turret,
+                       self.get_shoulder,
+                       self.get_elbow,
+                       self.get_wrist_pitch,
+                       self.get_wrist_yaw,
+                       self.get_wrist_roll,
                        self.get_grip]
 
     def push(self):
         out = self.struct.pack( * ( tuple(x() for x in self.joints) + self.get_offsets()) )
         self.sock.sendto(out , (self.UDP_IP, self.UDP_PORT))
-
 
     def get_distance(self, obj1, obj2):
         D = bpy.data
@@ -85,14 +86,40 @@ class BlenderPusher:
                     D.scenes['Scene'].arm_offsets.turret_offset)
 
 
-
-
 if __name__ == '__main__':
-
     a = BlenderPusher()
     def callback(passedScene):
         a.push()
-        
+
     bpy.app.handlers.scene_update_pre.append(callback)
 
-        
+    rsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    rsock.bind(('localhost', 7007))
+    rsock.setblocking(0)
+
+    struct = Struct('dddd')
+
+    def joy():
+        while True:
+            data = ''
+            try:
+                while True:
+                    data = rsock.recv(1024)
+            except socket.error:
+                pass
+
+            print(len(data))
+            if len(data) > 0:
+
+                delt = struct.unpack(data.encode('utf-8'))
+                target = bpy.data.objects['Armature'].pose.bones['Target'].location
+                target.x += delt[0]
+                target.y += delt[1]
+                target.z += delt[3]
+
+                a.push()
+            print(data)
+
+    t = threading.Thread(target=joy)
+    t.setDaemon(True)
+    t.start()
