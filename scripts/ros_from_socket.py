@@ -70,11 +70,12 @@ def manual_control(data):
     rospy.loginfo(data)
     values = np.empty(5, dtype=np.float32)
     for i in xrange(4):
-        values[i] = data.axes[i]/15.0 #int(data.axes[i] * 63 + 64)
+        values[i] = data.axes[i]/15.0 #divide by a greater number for higher sensitivity
     values[0] *= -1
-    if data.buttons[5] == 0:
+    if data.buttons[5] == 0: #press and hold RB to rotate
         values[4] = 0
-    else:
+    else: #when rotated, increase sensitivity because radians
+        values /= 10.0
         values[4] = 1
 
     wsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)

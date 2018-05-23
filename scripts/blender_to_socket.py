@@ -111,15 +111,18 @@ if __name__ == '__main__':
             if len(data) > 0:
 
                 delt = struct.unpack(data)
-                target = bpy.data.objects['Armature'].pose.bones['Centered_Target'].location
+                target = bpy.data.objects['Armature'].pose.bones['Centered_Target']
                 if delt[4] == 0:
-                    target.x += delt[0]
-                    target.y += delt[1]
-                    target.z += delt[3]
-                else: #TUH-DO: rotation
-                    target.x += 0
-                    target.y += 0
-                    target.z += 0
+                    loc = target.location
+                    loc.x += delt[0]
+                    loc.y += delt[1]
+                    loc.z += delt[3]
+                else:
+                    target.rotation_mode = 'XYZ'
+                    rot = target.rotation_euler
+                    rot.rotate_axis('X', delt[0])
+                    rot.rotate_axis('Y', delt[1])
+                    rot.rotate_axis('Z', delt[2])
 
                 a.push()
             print(data)
