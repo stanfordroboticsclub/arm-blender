@@ -111,7 +111,7 @@ if __name__ == '__main__':
             print(len(data))
             if len(data) > 0:
 
-                delt = struct.unpack(data.encode('utf-8'))
+                delt = struct.unpack(data)
                 target = bpy.data.objects['Armature'].pose.bones['Target'].location
                 target.x += delt[0]
                 target.y += delt[1]
