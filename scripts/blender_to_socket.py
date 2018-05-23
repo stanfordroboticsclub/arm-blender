@@ -97,8 +97,7 @@ if __name__ == '__main__':
     rsock.bind(('localhost', 7007))
     rsock.setblocking(0)
 
-    struct = Struct('dddd')
-
+    struct = Struct('ffff')
     def joy():
         while True:
             data = ''
@@ -112,7 +111,7 @@ if __name__ == '__main__':
             if len(data) > 0:
 
                 delt = struct.unpack(data)
-                target = bpy.data.objects['Armature'].pose.bones['Target'].location
+                target = bpy.data.objects['Armature'].pose.bones['Centered_Target'].location
                 target.x += delt[0]
                 target.y += delt[1]
                 target.z += delt[3]

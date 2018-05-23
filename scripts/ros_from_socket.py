@@ -70,18 +70,19 @@ def manual_control(data):
     rospy.loginfo(data)
     values = np.empty(4, dtype=np.float32)
     for i in xrange(4):
-        values[i] = data.axes[i] #int(data.axes[i] * 63 + 64)
+        values[i] = data.axes[i]/15.0 #int(data.axes[i] * 63 + 64)
+    values[0] *= -1
 
     wsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     JOY_IP = 'localhost'
     JOY_PORT = 7007
 
-    struct = Struct('dddd')
+    struct = Struct('ffff')
     wsock.sendto(struct.pack(values[0], values[1], values[2], values[3]), (JOY_IP, JOY_PORT))
 
 if __name__ == '__main__':
     try:
-        rospy.Subscriber('joy', Joy, manual_control)
+        rospy.Subscriber('jjoy', Joy, manual_control)
         s = JointStatePublisher()
         rospy.spin()
     except rospy.ROSInterruptException: pass

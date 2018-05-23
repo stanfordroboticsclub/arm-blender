@@ -1,5 +1,9 @@
-
 <launch>
+    <node pkg="joy" name="joy_node" type="joy_node">
+          <rosparam param="joy_node/dev">"/dev/input/js0"</rosparam>
+          <remap from="joy" to="jjoy" />
+    </node>
     <node pkg="arm-blender" name="blender_to_ros" type="ros_from_socket.py" />
     <node pkg="arm-blender" name="blender_control" type="start_blender.sh"  />
+    <node pkg="arm-roboclaw-driver" name="roboclaw" type="arm-driver.py"    />
 </launch>
