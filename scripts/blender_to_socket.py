@@ -120,8 +120,8 @@ if __name__ == '__main__':
                 else:
                     target.rotation_mode = 'XYZ'
                     rot = target.rotation_euler
-                    rot.rotate_axis('X', delt[0])
-                    rot.rotate_axis('Y', delt[1])
+                    rot.rotate_axis('X', delt[3])
+                    rot.rotate_axis('Y', delt[0])
                     rot.rotate_axis('Z', delt[2])
 
                 a.push()

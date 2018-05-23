@@ -75,7 +75,7 @@ def manual_control(data):
     if data.buttons[5] == 0: #press and hold RB to rotate
         values[4] = 0
     else: #when rotated, increase sensitivity because radians
-        values /= 10.0
+        values /= 8.0
         values[4] = 1
 
     wsock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
