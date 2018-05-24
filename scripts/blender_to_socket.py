@@ -60,7 +60,8 @@ class BlenderPusher:
         return self.get_angle('WristSide','WristCube', 'WristPointer')
 
     def get_wrist_roll(self):
-        return self.get_angle('WristUp','WristPointer', 'GripperUp')
+        return 0
+        # return self.get_angle('WristUp','WristPointer', 'GripperUp')
 
     def get_grip(self):
         D = bpy.data
