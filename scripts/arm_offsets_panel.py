@@ -35,7 +35,7 @@ class ArmOffsets(bpy.types.PropertyGroup):
 
 
     wrist_L_offset = bpy.props.IntProperty(
-        name = "Wrist L Offset",
+        name = "Wrist Pitch Offset",
         description="A integer property",
         default = 0,
         min = -40000,
@@ -44,7 +44,7 @@ class ArmOffsets(bpy.types.PropertyGroup):
         soft_min= -5000)
 
     wrist_R_offset = bpy.props.IntProperty(
-        name = "Wrist R Offset",
+        name = "Wrist Yaw Offset",
         description="A integer property",
         default = 0,
         min = -40000,
