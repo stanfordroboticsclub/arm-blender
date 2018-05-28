@@ -26,8 +26,9 @@ class BlenderPusher:
                        self.get_grip]
 
     def push(self):
-        out = self.struct.pack( * ( tuple(x() for x in self.joints) + self.get_offsets()) )
-        self.sock.sendto(out , (self.UDP_IP, self.UDP_PORT))
+        if self.get_grip() > 0:
+            out = self.struct.pack( * ( tuple(x() for x in self.joints) + self.get_offsets()) )
+            self.sock.sendto(out , (self.UDP_IP, self.UDP_PORT))
 
 
     def get_distance(self, obj1, obj2):
@@ -76,16 +77,6 @@ class BlenderPusher:
                     D.scenes['Scene'].arm_offsets.wrist_R_offset,
                     D.scenes['Scene'].arm_offsets.wrist_roll_offset,
                     D.scenes['Scene'].arm_offsets.gripper_offset)
-
-        return (D.scenes['Scene'].arm_offsets.gripper_offset,
-                    D.scenes['Scene'].arm_offsets.wrist_roll_offset,
-                    D.scenes['Scene'].arm_offsets.wrist_R_offset,
-                    D.scenes['Scene'].arm_offsets.wrist_L_offset,
-                    D.scenes['Scene'].arm_offsets.elbow_offset,
-                    D.scenes['Scene'].arm_offsets.shoulder_offset,
-                    D.scenes['Scene'].arm_offsets.turret_offset)
-
-
 
 
 if __name__ == '__main__':
